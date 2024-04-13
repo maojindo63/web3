@@ -1,0 +1,40 @@
+import org.web3j.abi.datatypes.Address;
+import org.web3j.crypto.Credentials;
+import org.web3j.protocol.Web3j;
+import org.web3j.protocol.http.HttpService;
+import org.web3j.tx.Contract;
+import org.web3j.tx.ManagedTransaction;
+
+import java.math.BigInteger;
+
+public class MintContract extends Contract {
+
+    public MintContract(String contractAddress, Web3j web3j, Credentials credentials) {
+        super("", contractAddress, web3j, credentials, ManagedTransaction.GAS_PRICE, Contract.GAS_LIMIT);
+    }
+
+    public void mintToken(String recipient, BigInteger amount) throws Exception {
+        Address recipientAddress = new Address(recipient);
+        // 调用合约的 mint 方法
+        executeTransactionAsync(contract.mint(recipientAddress, amount));
+    }
+
+    public static void main(String[] args) throws Exception {
+        // 连接到以太坊节点
+        Web3j web3j = Web3j.build(new HttpService("https://mainnet.infura.io/v3/YOUR_INFURA_PROJECT_ID"));
+
+        // 加载用户凭证（私钥）
+        Credentials credentials = Credentials.create("YOUR_PRIVATE_KEY");
+
+        // 合约地址
+        String contractAddress = "YOUR_CONTRACT_ADDRESS";
+
+        // 创建 MintContract 实例
+        MintContract mintContract = new MintContract(contractAddress, web3j, credentials);
+
+        // 执行 mint 操作
+        String recipient = "RECIPIENT_ADDRESS";
+        BigInteger amount = BigInteger.valueOf(100); // 要 mint 的数量
+        mintContract.mintToken(recipient, amount);
+    }
+}
