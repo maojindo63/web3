@@ -1,0 +1,22 @@
+import com.binance.api.client.BinanceApiClientFactory;
+import com.binance.api.client.BinanceApiRestClient;
+import com.binance.api.client.domain.account.AssetBalance;
+import com.binance.api.client.domain.account.Account;
+
+public class BscBalanceChecker {
+    public static void main(String[] args) {
+        // 创建 Binance API 客户端
+        String apiKey = "YOUR_API_KEY";
+        String secretKey = "YOUR_SECRET_KEY";
+        BinanceApiClientFactory factory = BinanceApiClientFactory.newInstance(apiKey, secretKey);
+        BinanceApiRestClient client = factory.newRestClient();
+
+        // 查询账户余额
+        Account account = client.getAccount();
+        for (AssetBalance balance : account.getBalances()) {
+            if (balance.getAsset().equals("BNB")) {
+                System.out.println("BNB Balance: " + balance.getFree());
+            }
+        }
+    }
+}
